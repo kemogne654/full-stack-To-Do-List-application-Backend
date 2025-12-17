@@ -9,17 +9,26 @@ const pool = new Pool({
 
 const initDatabase = async () => {
   try {
+    await pool.query('DROP TABLE IF EXISTS todos');
     await pool.query(`
-      CREATE TABLE IF NOT EXISTS todos (
+      CREATE TABLE todos (
         id SERIAL PRIMARY KEY,
-        task VARCHAR(255) NOT NULL,
-        completed BOOLEAN DEFAULT FALSE,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        title VARCHAR(255) NOT NULL,
+        description TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
-    console.log('Database initialized successfully');
+    console.log('✓ Database table created successfully');
+    
+    await pool.query(`
+      INSERT INTO todos (title, description) VALUES 
+      ('Complete project documentation', 'Write comprehensive README and API documentation'),
+      ('Setup development environment', 'Install Node.js, PostgreSQL, and configure the database')
+    `);
+    console.log('✓ Sample data inserted');
   } catch (error) {
-    console.error('Database initialization error:', error);
+    console.error('✗ Database initialization error:', error.message);
   }
 };
 

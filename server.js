@@ -24,15 +24,15 @@ app.get("/api/todos", async (req, res) => {
 });
 
 app.post("/api/todos", async (req, res) => {
-  const { task } = req.body;
-  if (!task) {
-    return res.status(400).json({ error: "Task is required" });
+  const { title, description } = req.body;
+  if (!title) {
+    return res.status(400).json({ error: "Title is required" });
   }
 
   try {
     const result = await pool.query(
-      "INSERT INTO todos (task) VALUES ($1) RETURNING *",
-      [task]
+      "INSERT INTO todos (title, description) VALUES ($1, $2) RETURNING *",
+      [title, description || '']
     );
     res.status(201).json(result.rows[0]);
   } catch (error) {
@@ -42,12 +42,12 @@ app.post("/api/todos", async (req, res) => {
 
 app.put("/api/todos/:id", async (req, res) => {
   const id = parseInt(req.params.id);
-  const { task, completed } = req.body;
+  const { title, description } = req.body;
 
   try {
     const result = await pool.query(
-      "UPDATE todos SET task = COALESCE($1, task), completed = COALESCE($2, completed) WHERE id = $3 RETURNING *",
-      [task, completed, id]
+      "UPDATE todos SET title = COALESCE($1, title), description = COALESCE($2, description), updated_at = CURRENT_TIMESTAMP WHERE id = $3 RETURNING *",
+      [title, description, id]
     );
 
     if (result.rows.length === 0) {
