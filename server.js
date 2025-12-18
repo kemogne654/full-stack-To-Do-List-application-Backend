@@ -6,7 +6,10 @@ const { pool, initDatabase } = require("./database");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:4200',
+  credentials: true
+}));
 app.use(express.json());
 
 // Initialise databas
@@ -77,6 +80,10 @@ app.delete("/api/todos/:id", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+app.get("/test", (req, res) => {
+  res.json({ message: "Backend is working!", port: PORT });
 });
 
 app.get("/health", (req, res) => {
