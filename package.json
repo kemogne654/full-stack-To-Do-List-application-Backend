@@ -22,6 +22,9 @@
   "jest": {
     "testEnvironment": "node"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "keywords": ["todo", "api", "express", "nodejs"],
   "author": "",
   "license": "MIT"
